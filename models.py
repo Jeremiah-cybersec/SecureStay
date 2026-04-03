@@ -12,7 +12,7 @@ class User(UserMixin, db.Model):
     full_name = db.Column(db.String(150), nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(20), nullable=False)
+    role = db.Column(db.String(20), default="tenant", nullable=False)
 
     listings = db.relationship("Listing", backref="landlord", lazy=True)
     requests = db.relationship("BookingRequest", backref="tenant", lazy=True)

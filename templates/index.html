@@ -1,6 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="hero">
     <h1>Welcome to SecureStay</h1>
-    <p>Your secure accommodation management system.</p>
+    <p>Your trusted accommodation platform</p>
+
+    <div class="dashboard">
+        <div class="card">
+            <h3>Total Listings</h3>
+            <p>{{ total_listings }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Your Listings</h3>
+            <p>{{ user_listings }}</p>
+        </div>
+    </div>
+
+    <h2>Recent Listings</h2>
+
+    {% for listing in recent_listings %}
+    <div class="listing-card">
+        <h3>{{ listing.title }}</h3>
+        <p><strong>Location:</strong> {{ listing.location }}</p>
+        <p><strong>Price:</strong> €{{ listing.price }}</p>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}
