@@ -27,6 +27,7 @@ class Listing(db.Model):
     location = db.Column(db.String(150), nullable=False)
     price = db.Column(db.Float, nullable=False)
     room_type = db.Column(db.String(50), nullable=False)
+    image_filename = db.Column(db.String(255), nullable=True)
     availability_status = db.Column(db.String(20), default="available", nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 

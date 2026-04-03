@@ -1,3 +1,6 @@
+import uuid
+import os
+from werkzeug.utils import secure_filename
 from flask import Flask, render_template, request, redirect, url_for
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -119,12 +122,24 @@ def add_listing():
         room_type = request.form.get('room_type')
         description = request.form.get('description')
 
+        image = request.files.get('image')
+        image_filename = None
+
+        if image and image.filename != '':
+
+            original_filename = secure_filename(image.filename)
+            unique_filename = f"{uuid.uuid4().hex}_{original_filename}"
+            image_path = os.path.join('static', 'uploads', unique_filename)
+            image.save(image_path)
+            image_filename = unique_filename
+
         new_listing = Listing(
             title=title,
             location=location,
             price=float(price),
             room_type=room_type,
             description=description,
+            image_filename=image_filename,
             landlord_id=current_user.id
         )
 

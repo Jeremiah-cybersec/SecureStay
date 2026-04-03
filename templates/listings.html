@@ -22,6 +22,9 @@
     {% if listings %}
         {% for listing in listings %}
             <div class="listing-card">
+                {% if listing.image_filename %}
+                <img src="{{ url_for('static', filename='uploads/' + listing.image_filename) }}" alt="Listing Image" class="listing-image">
+                {% endif %}
                 <h3>{{ listing.title }}</h3>
                 <p><strong>Location:</strong> {{ listing.location }}</p>
                 <p><strong>Price:</strong> €{{ listing.price }}</p>
