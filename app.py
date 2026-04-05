@@ -178,11 +178,29 @@ def edit_listing(listing_id):
         return "Access denied", 403
 
     if request.method == 'POST':
-        listing.title = request.form['title']
-        listing.location = request.form['location']
-        listing.price = request.form['price']
-        listing.room_type = request.form['room_type']
-        listing.description = request.form['description']
+        listing.title = request.form.get('title')
+        listing.location = request.form.get('location')
+        listing.price = float(request.form.get('price'))
+        listing.room_type = request.form.get('room_type')
+        listing.description = request.form.get('description')
+
+        image = request.files.get('image')
+
+        if image and image.filename != '':
+            # Delete old image
+            if listing.image_filename:
+                old_path = os.path.join('static', 'uploads', listing.image_filename)
+                if os.path.exists(old_path):
+                    os.remove(old_path)
+
+            # Save new image
+            filename = secure_filename(image.filename)
+            unique_filename = f"{uuid.uuid4().hex}_{filename}"
+            image_path = os.path.join('static', 'uploads', unique_filename)
+            image.save(image_path)
+
+            listing.image_filename = unique_filename
+
 
         db.session.commit()
 
