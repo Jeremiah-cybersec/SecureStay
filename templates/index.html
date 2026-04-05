@@ -21,10 +21,17 @@
 
     {% for listing in recent_listings %}
     <div class="listing-card">
+        {% if listing.image_filename %}
+            <img src="{{ url_for('static', filename='uploads/' + listing.image_filename) }}" class="listing-image" alt="Listing Image">
+        {% else %}
+            <img src="{{ url_for('static', filename='default.jpg') }}" class="listing-image" alt="Default Image">
+        {% endif %}
+
         <h3>{{ listing.title }}</h3>
         <p><strong>Location:</strong> {{ listing.location }}</p>
         <p><strong>Price:</strong> €{{ listing.price }}</p>
     </div>
     {% endfor %}
+
 </div>
 {% endblock %}

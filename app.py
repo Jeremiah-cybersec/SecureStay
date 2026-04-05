@@ -157,6 +157,12 @@ def delete_listing(listing_id):
 
     if listing.landlord_id != current_user.id:
         return "Access denied", 403
+    
+    #Delete image file if it exist
+    if listing.image_filename:
+        image_path = os.path.join('static', 'uploads', listing.image_filename)
+        if os.path.exist(image_path):
+            os.remove(image_path)
 
     db.session.delete(listing)
     db.session.commit()
