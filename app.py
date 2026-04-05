@@ -161,7 +161,7 @@ def delete_listing(listing_id):
     #Delete image file if it exist
     if listing.image_filename:
         image_path = os.path.join('static', 'uploads', listing.image_filename)
-        if os.path.exist(image_path):
+        if os.path.exists(image_path):
             os.remove(image_path)
 
     db.session.delete(listing)
