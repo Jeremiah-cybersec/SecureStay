@@ -210,9 +210,24 @@ def edit_listing(listing_id):
 
 @app.route('/api/listings')
 def api_listings():
-    listings = Listing.query.all()
-    data = []
+    query = Listing.query
 
+    location = request.args.get('location')
+    max_price = request.args.get('max_price')
+    room_type = request.args.get('room_type')
+
+    if location:
+        query = query.filter(Listing.location.ilike(f"%{location}%"))
+
+    if max_price:
+        query = query.filter(Listing.price <= float(max_price))
+
+    if room_type:
+        query = query.filter(Listing.room_type == room_type)
+
+    listings = query.all()
+
+    data = []
     for listing in listings:
         data.append({
             "id": listing.id,
