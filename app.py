@@ -241,6 +241,24 @@ def api_listings():
 
     return jsonify(data)
 
+@app.route('/api/listings/<int:listing_id>')
+def api_single_listing(listing_id):
+    listing = Listing.query.get_or_404(listing_id)
+
+    data = {
+        "id": listing.id,
+        "title": listing.title,
+        "location": listing.location,
+        "price": listing.price,
+        "room_type": listing.room_type,
+        "description": listing.description,
+        "image_filename": listing.image_filename,
+        "availability_status": listing.availability_status,
+        "landlord_id": listing.landlord_id
+    }
+
+    return jsonify(data)
+
 
 if __name__ == "__main__":
    with app.app_context():
