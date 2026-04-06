@@ -1,7 +1,7 @@
 import uuid
 import os
 from werkzeug.utils import secure_filename
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
@@ -207,6 +207,24 @@ def edit_listing(listing_id):
         return redirect(url_for('listings'))
 
     return render_template('edit_listing.html', listing=listing)
+
+@app.route('/api/listings')
+def api_listings():
+    listings = Listing.query.all()
+    data = []
+
+    for listing in listings:
+        data.append({
+            "id": listing.id,
+            "title": listing.title,
+            "location": listing.location,
+            "price": listing.price,
+            "room_type": listing.room_type,
+            "description": listing.description,
+            "image_filename": listing.image_filename
+        })
+
+    return jsonify(data)
 
 
 if __name__ == "__main__":
