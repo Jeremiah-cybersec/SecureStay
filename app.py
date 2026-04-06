@@ -10,6 +10,8 @@ from models import db, User, Listing
 app = Flask(__name__)
 app.config.from_object(Config)
 
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
+
 db.init_app(app)
 
 login_manager = LoginManager()
@@ -19,6 +21,11 @@ login_manager.init_app(app)
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/')
@@ -125,7 +132,7 @@ def add_listing():
         image = request.files.get('image')
         image_filename = None
 
-        if image and image.filename != '':
+        if image and image.filename != '' and allowed_file(image.filename): 
 
             original_filename = secure_filename(image.filename)
             unique_filename = f"{uuid.uuid4().hex}_{original_filename}"
@@ -186,7 +193,7 @@ def edit_listing(listing_id):
 
         image = request.files.get('image')
 
-        if image and image.filename != '':
+        if image and image.filename != '' and allowed_file(image.filename):
             # Delete old image
             if listing.image_filename:
                 old_path = os.path.join('static', 'uploads', listing.image_filename)
@@ -259,6 +266,9 @@ def api_single_listing(listing_id):
 
     return jsonify(data)
 
+@app.errorhandler(413)
+def too_large(e):
+    return "File is too large. Maximum size is 2 MB.", 413
 
 if __name__ == "__main__":
    with app.app_context():
